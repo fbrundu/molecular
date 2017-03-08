@@ -10,15 +10,15 @@ with open('HISTORY.rst') as history_file:
   history = history_file.read()
 
 requirements = [
-  bioservices==1.4.16,
-  pandas==0.19.2,
-  scipy==0.18.1,
-  plotly==2.0.5,
-  seaborn==0.7.1,
-  IPython==5.3.0,
-  statsmodels==0.8.0,
-  numpy==1.12.0,
-  ipywidgets==6.0.0,
+  'bioservices==1.4.16',
+  'pandas==0.19.2',
+  'scipy==0.18.1',
+  'plotly==2.0.5',
+  'seaborn==0.7.1',
+  'IPython==5.3.0',
+  'statsmodels==0.8.0',
+  'numpy==1.12.0',
+  'ipywidgets==6.0.0',
 ]
 
 test_requirements = [
