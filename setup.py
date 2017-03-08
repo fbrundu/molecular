@@ -35,7 +35,7 @@ setup(
   url='https://github.com/fbrundu/molecular',
   packages=[
     'molecular',
-    'molecular.histology',
+#    'molecular.histology',
     'molecular.plotting',
     'molecular.preprocessing',
   ],
