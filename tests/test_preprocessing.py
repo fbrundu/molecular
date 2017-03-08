@@ -31,7 +31,7 @@ class TestFeatureConstruction(unittest.TestCase):
        [2,3,1,2,3,2,5,6,4],
        [2,3,1,2,3,1,5,6,4],
        [2,3,1,6,3,1,3,6,4],
-       [1,3,1,4,2,3,2,1,4]],
+       [2,3,1,4,2,3,2,1,4]],
       columns=[f'gene{i}' for i in range(9)])
     self.y = pd.DataFrame({'Class': [1,2,1,1,2,1,2,1,2]})
 

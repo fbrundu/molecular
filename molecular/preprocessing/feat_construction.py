@@ -6,12 +6,11 @@ import multiprocessing as mp
 import pandas as pd
 import scipy.stats as ss
 
-# TODO test logging
-
 
 class FeatureConstruction:
 
   def __init__(self, X, y, top, chunksize=10):
+    ''' Initialisation '''
 
     self.X = X.copy()
     self.y = y.iloc[:, 0].copy()
@@ -46,6 +45,7 @@ class FeatureConstruction:
     return self._ff
 
   def _ratio(self, **kwargs):
+    ''' Computes log2-ratio between pair of features '''
 
     with cf.ProcessPoolExecutor(max_workers=self._njobs) as executor:
       log.debug(
@@ -61,6 +61,8 @@ class FeatureConstruction:
     self.X = pd.concat([self.X, self._nX], axis=1)
 
   def _merge_and_select(self, f_X):
+    ''' Merges the results of the new chunk with previous results, and selects
+        top features '''
 
     if self._nX is None:
       self._nX = pd.concat(f_X, axis=1)
@@ -72,6 +74,7 @@ class FeatureConstruction:
 
   @staticmethod
   def _select(X, top, y=None):
+    ''' Selects top features based on Kruskal-Wallis test p-value '''
 
     X = X.copy()
     feats = pd.DataFrame(index=X.columns, columns=['Value'])
@@ -89,6 +92,7 @@ class FeatureConstruction:
     return X[feats.head(n=top).index]
 
   def _ratio_internal(self, X):
+    ''' Log2-ratio routine executed by each worker '''
 
     feats = X.columns
 
@@ -104,6 +108,7 @@ class FeatureConstruction:
     return X
 
   def build(self, methods=[], **kwargs):
+    ''' Entry point for feature construction execution '''
 
     for m in methods:
       if m == 'ratio':
