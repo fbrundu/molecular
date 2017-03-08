@@ -23,6 +23,11 @@ Computational Biology utility module
 
 * Free software: MIT license
 * Documentation: https://molecular.readthedocs.io.
+* Install latest master version on pip with:
+
+.. code-block:: none
+
+   pip install git+https://philae.polito.it/bio/molecular.git
 
 
 Features
