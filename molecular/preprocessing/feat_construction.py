@@ -1,112 +1,114 @@
 # -*- coding: utf-8 -*-
 
 import concurrent.futures as cf
+import logging as log
 import multiprocessing as mp
-import logging
+import pandas as pd
+import scipy.stats as ss
 
-# TODO logging
+# TODO test logging
+
 
 class FeatureConstruction:
 
-    def __init__(self, X, y, log2_values, top):
+  def __init__(self, X, y, top, chunksize=10):
 
-        self.X = X.copy()
-        self.y = y.iloc[:, 0].copy()
-        self.ignore = ('l2r', )
-        self.log2_values = log2_values
-        self.top = top
-        self.chunksize = 10
-        self.order_by = None
+    self.X = X.copy()
+    self.y = y.iloc[:, 0].copy()
+    self._ignore = ('l2r', )
+    self._top = top
+    self._chunksize = chunksize
+    self._njobs = mp.cpu_count() + 1
 
-    def _ratio(self, order_by='kruskal', **kwargs):
+    self._ff = None
+    self._nX = None
 
-        self.order_by = order_by
+  def _ex_args(self, i):
+    ''' Produces data chunk for each executor '''
+    args = []
 
-        features = [c for c in self.X.columns if not c.startswith(self.ignore)]
+    for j in range(i, i + self._njobs):
+      try:
+        args += [self.X.loc[:, self._first_feat[j]:].copy()]
+      except:
+        log.error(f'No map args for j {j}')
 
-        njobs = mp.cpu_count() + 1
-        with cf.ProcessPoolExecutor(max_workers=njobs) as executor:
-            log.debug(f'Starting ProcessPool: {njobs} workers')
-            first_feat = [
-              features[i] for i in range(0, len(features)-1, self.chunksize)]
-            log.debug(f'There are {len(first_feat)} chunks')
+    return args
 
-            new_X = None
-            for i in range(0, len(first_feat), njobs):
-                log.debug(f'Chunk {i} of {len(first_feat}')
+  @property
+  def _first_feat(self):
+    ''' List of first feature for each chunk '''
 
-                map_args = []
-                for j in range(i, i + njobs):
-                    try:
-                        map_args += [self.X.loc[:, first_feat[j]:].copy()]
-                    except:
-                        log.error('No map args for j {j}')
+    if self._ff is None:
+      feat = [c for c in self.X.columns if not c.startswith(self._ignore)]
+      self._ff = [feat[i] for i in range(0, len(feat) - 1, self._chunksize)]
 
-                f_X = [f for f in executor.map(self._ratio_internal, map_args)]
+    return self._ff
 
-                if new_X is None:
-                    new_X = pd.concat(f_X, axis=1)
-                else:
-                    new_X = pd.concat([new_X] + f_X, axis=1)
+  def _ratio(self, **kwargs):
 
-                if self.top is not None:
-                    new_X = FeatureConstruction._top(
-                      new_X, self.top, y=self.y, order_by=self.order_by)
+    with cf.ProcessPoolExecutor(max_workers=self._njobs) as executor:
+      log.debug(
+        f'Starting Pool: {self._njobs} workers, {len(self._first_feat)} chunks')
 
-            self.X = pd.concat([self.X, new_X], axis=1)
+      for i in range(0, len(self._first_feat), self._njobs):
+        log.debug(f'Chunk {i} of {len(self._first_feat)}')
 
-    @staticmethod
-    def _top(X, top, order_by='kruskal', y=None):
+        f_X = [f for f in executor.map(self._ratio_internal, self._ex_args(i))]
 
-        X = X.copy()
+        self._merge_and_select(f_X)
 
-        feats = pd.DataFrame(index=X.columns, columns=['Value'])
+    self.X = pd.concat([self.X, self._nX], axis=1)
 
-        X.loc[:, 'Class'] = y.ix[X.index].astype(int)
-        if order_by == 'kruskal':
-            ascending = True
+  def _merge_and_select(self, f_X):
 
-        for feat_name in feats.index:
-            X_local = X[[feat_name, 'Class']].copy()
-            groups = [
-              v[v.columns[0]].values for k, v in X_local.groupby(['Class'])]
-            _, p_val = ss.kruskal(*groups)
-            if order_by == 'kruskal':
-                feats.loc[feat_name, "Value"] = p_val
+    if self._nX is None:
+      self._nX = pd.concat(f_X, axis=1)
+    else:
+      self._nX = pd.concat([self._nX] + f_X, axis=1)
 
-        feats = feats.sort_values(by=['Value'], ascending=[ascending])
-        feats_l = feats.head(n=top).index
-        X = X[feats_l]
+    if self._top is not None:
+      self._nX = FeatureConstruction._select(self._nX, self._top, y=self.y)
 
-        return X
+  @staticmethod
+  def _select(X, top, y=None):
 
-    def _ratio_internal(self, X):
+    X = X.copy()
+    feats = pd.DataFrame(index=X.columns, columns=['Value'])
+    X.loc[:, 'Class'] = y.ix[X.index].astype(int)
+    ascending = True
 
-        features = X.columns
+    for feat in feats.index:
+      nX = X[[feat, 'Class']].copy()
+      groups = [v[v.columns[0]].values for k, v in nX.groupby(['Class'])]
+      _, p_val = ss.kruskal(*groups)
+      feats.loc[feat, "Value"] = p_val
 
-        for i, feat_i in enumerate(features[:self.chunksize]):
-            for j in range(i + 1, len(features)):
-                feat_j = features[j]
-                feat_name = 'l2r_' + feat_i + '_' + feat_j
-                if self.log2_values:
-                    feat_value = X[feat_i] - X[feat_j]
-                else:
-                    feat_value = np.log2(X[feat_i]) - np.log2(X[feat_j])
-                X[feat_name] = feat_value
+    feats = feats.sort_values(by=['Value'], ascending=[ascending])
 
-        keep = [feat for feat in X.columns if feat.startswith("l2r_")]
-        X = X[keep]
+    return X[feats.head(n=top).index]
 
-        if self.top is not None:
-            X = FeatureConstruction._top(
-              X, self.top, y=self.y, order_by=self.order_by)
+  def _ratio_internal(self, X):
 
-        return X
+    feats = X.columns
 
-    def build(self, methods=[], **kwargs):
+    for i in range(self._chunksize):
+      for j in range(i + 1, len(feats)):
+        X[f'l2r_{feats[i]}_{feats[j]}'] = X[feats[i]] - X[feats[j]]
 
-        for m in methods:
-            if m == "ratio":
-                self._ratio(**kwargs)
+    X = X[[f for f in X.columns if f.startswith('l2r_')]]
 
-        return self.X
+    if self._top is not None:
+      X = FeatureConstruction._select(X, self._top, y=self.y)
+
+    return X
+
+  def build(self, methods=[], **kwargs):
+
+    for m in methods:
+      if m == 'ratio':
+        self._ratio(**kwargs)
+      else:
+        log.info(f'Method {m} not recognised')
+
+    return self.X
