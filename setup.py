@@ -19,6 +19,11 @@ requirements = [
   'statsmodels==0.8.0',
   'numpy==1.12.0',
   'ipywidgets==6.0.0',
+  'pymrmr',
+]
+
+dependency_links = [
+  'git+https://github.com/fbrundu/pymrmr.git',
 ]
 
 test_requirements = [
@@ -43,6 +48,7 @@ setup(
 #               'molecular'},
   include_package_data=True,
   install_requires=requirements,
+  dependency_links=dependency_links,
   license="MIT license",
   zip_safe=False,
   keywords='molecular',
