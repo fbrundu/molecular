@@ -23,7 +23,7 @@ class TestFeatureConstruction(unittest.TestCase):
   def setUp(self):
 
     self.X = pd.DataFrame(
-      [[1,2,3,1,2,3,4,5,6],
+      [[3,2,3,1,2,3,4,5,6],
        [2,3,1,2,3,1,5,6,4],
        [2,3,1,2,3,1,5,6,4],
        [2,3,1,2,3,1,5,6,4],
@@ -38,9 +38,11 @@ class TestFeatureConstruction(unittest.TestCase):
     self.top = 10
     chunksize = 2
 
-    fc = FeatureConstruction(
+    self.fc = FeatureConstruction(
       X=self.X, y=self.y, top=self.top, chunksize=chunksize)
-    self.nX = fc.build(methods=['ratio'])
+
+    self.fc = self.fc.fit(constructor='ratio')
+    self.nX = self.fc.X
 
   def tearDown(self):
     pass
@@ -51,6 +53,25 @@ class TestFeatureConstruction(unittest.TestCase):
     assert self.nX.shape[1] == (self.X.shape[1] + n_newfeats)
 
   def test_ratio_values(self):
+
+    for feat in [f for f in self.nX.columns if f.startswith('l2r_')]:
+      feat_s = feat.split('_')
+      assert ((self.nX[feat_s[1]] - self.nX[feat_s[2]]) == self.nX[feat]).all()
+
+  def test_ratio_dimensions_x2(self):
+
+    self.fc.X = self.X
+    self.fc = self.fc.fit(constructor='ratio')
+    self.nX = self.fc.X
+
+    n_newfeats = min(self.top, sum(range(self.X.shape[1])))
+    assert self.nX.shape[1] == (self.X.shape[1] + n_newfeats)
+
+  def test_ratio_values_x2(self):
+
+    self.fc.X = self.X
+    self.fc = self.fc.fit(constructor='ratio')
+    self.nX = self.fc.X
 
     for feat in [f for f in self.nX.columns if f.startswith('l2r_')]:
       feat_s = feat.split('_')
