@@ -23,7 +23,7 @@ requirements = [
 ]
 
 dependency_links = [
-  'https://c35528643131860a7c77074d3393a143dd8be85e@github.com/fbrundu/pymrmr.git#egg=pymrmr-0.1.0',
+  'git+https://c35528643131860a7c77074d3393a143dd8be85e@github.com/fbrundu/pymrmr.git#egg=pymrmr-0.1.0',
 ]
 
 test_requirements = [
