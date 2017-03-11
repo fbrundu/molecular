@@ -21,6 +21,7 @@ requirements = [
   'ipywidgets==6.0.0',
   'pymrmr>=0.1.0',
   'dask==0.14.0',
+  'scikit-learn==0.18.1',
 ]
 
 dependency_links = [
