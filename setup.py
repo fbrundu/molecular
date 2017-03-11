@@ -19,7 +19,7 @@ requirements = [
   'statsmodels==0.8.0',
   'numpy==1.12.0',
   'ipywidgets==6.0.0',
-  'pymrmr',
+  'pymrmr>=0.1.0',
   'dask==0.14.0',
 ]
 
@@ -44,6 +44,7 @@ setup(
 #    'molecular.histology',
     'molecular.plotting',
     'molecular.preprocessing',
+    'molecular.util',
   ],
 #  package_dir={'molecular':
 #               'molecular'},

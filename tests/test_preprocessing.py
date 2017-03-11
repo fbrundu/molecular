@@ -17,7 +17,7 @@ import sys
 import unittest
 
 
-from molecular import (FeatureConstruction, FeatureSelection)
+from molecular.preprocessing import (FeatureConstruction, FeatureSelection)
 
 log.basicConfig(filename='tests/test_preprocessing.log', level=log.DEBUG)
 

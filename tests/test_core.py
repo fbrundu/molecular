@@ -14,7 +14,7 @@ import pandas as pd
 import sys
 import unittest
 
-from molecular import discretise
+from molecular.preprocessing import discretise
 
 log.basicConfig(filename='tests/test_core.log', level=log.DEBUG)
 
