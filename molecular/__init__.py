@@ -4,4 +4,6 @@ __author__ = """Francesco G. Brundu"""
 __email__ = 'francesco.brundu@gmail.com'
 
 from .plotting import Plot
-from .preprocessing import FeatureConstruction, Mapping
+from .preprocessing import (discretise, FeatureConstruction, FeatureSelection,
+  Mapping)
+from .util import nostdout

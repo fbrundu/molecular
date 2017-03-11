@@ -20,6 +20,7 @@ requirements = [
   'numpy==1.12.0',
   'ipywidgets==6.0.0',
   'pymrmr',
+  'dask==0.14.0',
 ]
 
 dependency_links = [
