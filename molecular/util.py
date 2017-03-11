@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import contextlib
+import numpy as np
 import os
 import sys
 
@@ -15,3 +16,10 @@ def nostdout():
     yield
   finally:
     sys.stdout = savestdout
+
+def mad(array):
+  ''' Median Absolute Deviation: a "Robust" version of standard deviation.
+      Indices variabililty of the sample.
+      https://en.wikipedia.org/wiki/Median_absolute_deviation '''
+
+  return np.median(np.abs(array - np.median(array)))

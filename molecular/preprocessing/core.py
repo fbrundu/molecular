@@ -6,6 +6,7 @@ import multiprocessing as mp
 import numpy as np
 import pandas as pd
 
+from .. import util
 
 def discretise(X, nscale=1):
   ''' Discretise each feature distribution.
@@ -21,7 +22,7 @@ def _discretise_series(X, nscale=1):
   ''' Discretise pandas Series '''
 
   loc = X.median()
-  scale = mad(X)
+  scale = util.mad(X)
   # NOTE Adding float min to avoid same bin edge values in case of scale == 0
   precision = 3
   float_min = 1 / 10**precision
@@ -31,10 +32,3 @@ def _discretise_series(X, nscale=1):
   X = pd.cut(X, bins, labels=[-1, 0, 1], precision=precision)
 
   return X
-
-def mad(array):
-  ''' Median Absolute Deviation: a "Robust" version of standard deviation.
-      Indices variabililty of the sample.
-      https://en.wikipedia.org/wiki/Median_absolute_deviation '''
-
-  return np.median(np.abs(array - np.median(array)))
