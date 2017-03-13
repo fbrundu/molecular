@@ -244,14 +244,14 @@ class CMSForests16:
         'min_samples_split': np.linspace(2, self._mincls, self.ntests,
           dtype=int) }
 
-  def __init__(self, discretise=True, nscale=1, logfile=None):
+  def __init__(self, is_discrete=False, nscale=1, logfile=None):
     ''' Initialisation '''
 
     self._max_feat = None
     self._ntests = 10
     self.model = None
     self.n = None
-    self.discretise = discretise
+    self.is_discrete = is_discrete
     self.nscale = nscale
     self.fcons_top = 10000
     self.X_test = None
@@ -319,7 +319,7 @@ class CMSForests16:
     log.debug('Feature selection')
     fs = FeatureSelection(X=self.X, y=self.y)
     n = min(self.max_feat, self.X.shape[1])
-    fs.fit(selector='mRMR', n=n, discretise=self.discretise,
+    fs.fit(selector='mRMR', n=n, is_discrete=self.is_discrete,
       nscale=self.nscale)
     sX = fs.X
 

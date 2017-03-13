@@ -13,22 +13,22 @@ class FeatureSelection:
     self.X = X.copy()
     self.y = y.copy()
 
-  def _mRMR(self, n, method='MIQ', discretise=False, nscale=1):
+  def _mRMR(self, n, method='MIQ', is_discrete=True, nscale=1):
     ''' minimum Redundancy Maximum Relevance algorithm '''
 
-    _X = self.X.copy()
+    sX = self.X.copy()
 
-    if discretise:
+    if not is_discrete:
       log.debug(f'Discretising X using scale = scale * {nscale}')
-      _X = discretise(_X, nscale)
+      sX = discretise(sX, nscale)
 
-    _X.insert(0, self.y.columns[0], self.y.iloc[:, 0])
+    sX.insert(0, self.y.columns[0], self.y.iloc[:, 0])
 
     log.debug(f'Starting mRMR ({method}, n={n})')
-    _feats = pymrmr.mRMR(_X, 'MIQ', n)
+    feats = pymrmr.mRMR(sX, 'MIQ', n)
 
-    log.debug(f'Updating dataset, {len(_feats)} features')
-    self.X = self.X[_feats]
+    log.debug(f'Updating dataset, {len(feats)} features')
+    self.X = self.X[feats]
 
   def fit(self, selector, **kwargs):
     ''' Select features '''
