@@ -6,7 +6,7 @@ import multiprocessing as mp
 import numpy as np
 import pandas as pd
 
-from ..util import mad
+from molecular.util import mad
 
 def discretise(X, nscale=1):
   ''' Discretise each feature distribution.

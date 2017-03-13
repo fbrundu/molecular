@@ -12,9 +12,9 @@ from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import cross_val_predict, cross_val_score
 import statsmodels.sandbox.stats.multicomp as smc
 
-from .plotting import Plot
-from .preprocessing import FeatureConstruction, FeatureSelection
-from .util import mad, mc_roc_auc
+from molecular.plotting import Plot
+from molecular.preprocessing import FeatureConstruction, FeatureSelection
+from molecular.util import mad, mc_roc_auc
 
 
 class CMSForests16:
@@ -368,8 +368,8 @@ class CMSForests16:
   def _update_model(self, gcv, n):
 
     def _better_score(nmed, omed, nmad, omad, nn, on):
-      if (nmed > omed) or (nmed == omed and nmad < omad) or
-          (nmed == omed and nmad == omad and nn > on):
+      if ((nmed > omed) or (nmed == omed and nmad < omad) or
+          (nmed == omed and nmad == omad and nn > on)):
         return True
       else:
         return False

@@ -45,6 +45,7 @@ setup(
   packages=[
     'molecular',
 #    'molecular.histology',
+    'molecular.pipelines',
     'molecular.plotting',
     'molecular.preprocessing',
     'molecular.util',
