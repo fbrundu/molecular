@@ -319,7 +319,7 @@ class CMSForests16:
     log.debug('Feature selection')
     fs = FeatureSelection(X=self.X, y=self.y)
     n = min(self.max_feat, self.X.shape[1])
-    fs.fit(selector=['mRMR'], n=n, discretise=self.discretise,
+    fs.fit(selector='mRMR', n=n, discretise=self.discretise,
       nscale=self.nscale)
     sX = fs.X
 
@@ -412,7 +412,7 @@ class CMSForests16:
       self.X = self.X[list(build_subset)]
       log.debug(f'Building from {self.X.shape[1]} features')
 
-    log.debug('Building max {self.fcons_top} final features')
+    log.debug(f'Building max {self.fcons_top} final features')
     fc = FeatureConstruction(X=self.X, top=self.fcons_top, y=self.y)
     fc.fit(constructor='ratio')
     self.X = fc.X
