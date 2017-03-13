@@ -22,6 +22,8 @@ requirements = [
   'pymrmr>=0.1.0',
   'dask==0.14.0',
   'scikit-learn==0.18.1',
+  'joblib==0.11',
+  'imbalanced-learn==0.2.1',
 ]
 
 dependency_links = [

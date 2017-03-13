@@ -26,10 +26,10 @@ def mad(array):
 
   return np.median(np.abs(array - np.median(array)))
 
-def mclass_roc_auc(average='macro'):
+def mc_roc_auc(average='macro'):
+  ''' Multiclass ROC AUC '''
 
-  def _mclass_roc_auc(truth, pred, average="macro"):
-    ''' Multiclass ROC AUC '''
+  def _mc_roc_auc(truth, pred, average="macro"):
 
     lb = LabelBinarizer()
     lb.fit(truth)

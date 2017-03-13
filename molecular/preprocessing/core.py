@@ -6,7 +6,7 @@ import multiprocessing as mp
 import numpy as np
 import pandas as pd
 
-from .. import util
+from ..util import mad
 
 def discretise(X, nscale=1):
   ''' Discretise each feature distribution.
@@ -22,7 +22,7 @@ def _discretise_series(X, nscale=1):
   ''' Discretise pandas Series '''
 
   loc = X.median()
-  scale = util.mad(X)
+  scale = mad(X)
   # NOTE Adding float min to avoid same bin edge values in case of scale == 0
   precision = 3
   float_min = 1 / 10**precision
