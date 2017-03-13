@@ -7,9 +7,9 @@ import numpy as np
 import pandas as pd
 import scipy.stats as ss
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import cross_val_predict, cross_val_score
+from sklearn.model_selection import (cross_val_predict, cross_val_score,
+  GridSearchCV)
 import statsmodels.sandbox.stats.multicomp as smc
 
 from molecular.plotting import Plot
@@ -244,7 +244,7 @@ class CMSForests16:
         'min_samples_split': np.linspace(2, self._mincls, self.ntests,
           dtype=int) }
 
-  def __init__(self, discretise=True, nscale=1):
+  def __init__(self, discretise=True, nscale=1, logfile=None):
     ''' Initialisation '''
 
     self._max_feat = None
@@ -256,6 +256,8 @@ class CMSForests16:
     self.fcons_top = 10000
     self.X_test = None
     self.y_test = None
+
+    log.basicConfig(filename=logfile, level=log.DEBUG)
 
   def deserialise(self, fpath):
     ''' Deserialise best model '''
