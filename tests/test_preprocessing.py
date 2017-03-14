@@ -107,7 +107,7 @@ class TestFeatureSelection(unittest.TestCase):
     for n in self.feats.keys():
       self.fs = FeatureSelection(X=self.X, y=self.y)
       self.fs = self.fs.fit(selector='mRMR', n=n, method='MIQ',
-        discretise=False)
+        is_discrete=True)
       log.debug(self.fs.X.columns)
       log.debug(self.feats[n])
       assert set(self.fs.X.columns) == set(self.feats[n])
