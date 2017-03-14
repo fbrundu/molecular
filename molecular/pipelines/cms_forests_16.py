@@ -257,7 +257,8 @@ class CMSForests16:
     self.X_test = None
     self.y_test = None
 
-    log.basicConfig(filename=logfile, level=log.DEBUG)
+    log.basicConfig(filename=logfile, level=log.DEBUG,
+      format='%(asctime)s:%(levelname)s:%(module)s-%(funcName)s:%(message)s')
 
   def deserialise(self, fpath):
     ''' Deserialise best model '''
