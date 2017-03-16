@@ -44,10 +44,10 @@ class FeatureConstruction:
     nX = None
 
     with cf.ProcessPoolExecutor(max_workers=self._njobs) as executor:
-      log.debug(f'Starting Pool: {self._njobs} workers, {len(ff)} chunks')
+      log.info(f'Starting Pool: {self._njobs} workers, {len(ff)} chunks')
 
       for i in range(0, len(ff), self._njobs):
-        log.debug(f'Chunk {i} of {len(ff)}')
+        log.info(f'Chunk {i} of {len(ff)}')
 
         cX = [
           f for f in executor.map(self._ratio_internal, self._ex_args(i, ff))]

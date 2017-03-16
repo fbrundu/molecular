@@ -19,15 +19,15 @@ class FeatureSelection:
     sX = self.X.copy()
 
     if not is_discrete:
-      log.debug(f'Discretising X using scale = scale * {nscale}')
+      log.info(f'Discretising X using scale = scale * {nscale}')
       sX = discretise(sX, nscale)
 
     sX.insert(0, self.y.columns[0], self.y.iloc[:, 0])
 
-    log.debug(f'Starting mRMR ({method}, n={n})')
+    log.info(f'Starting mRMR ({method}, n={n})')
     feats = pymrmr.mRMR(sX, 'MIQ', n)
 
-    log.debug(f'Updating dataset, {len(feats)} features')
+    log.info(f'Updating dataset, {len(feats)} features')
     self.X = self.X[feats]
 
   def fit(self, selector, **kwargs):

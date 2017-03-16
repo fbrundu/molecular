@@ -50,7 +50,7 @@ class CMSForests16:
       self.fX = pd.DataFrame(fX, index=samples, columns=self.X.columns)
       self.fy = pd.DataFrame(fy, index=samples, columns=self.y.columns)
 
-      log.debug(f'Keeping {fX.shape[0]} samples, {fX.shape[1]} features')
+      log.info(f'Keeping {fX.shape[0]} samples, {fX.shape[1]} features')
 
     def _fit(self):
 
@@ -152,7 +152,7 @@ class CMSForests16:
         raise Exception('Best classifier not fitted')
 
       if self._importance is None:
-        log.debug('Computing importance')
+        log.info('Computing importance')
 
         self.best_clf.fit(self.fX.values, self.fy.values.ravel())
         self._importance = self.best_clf.feature_importances_
@@ -163,8 +163,6 @@ class CMSForests16:
           tree.feature_importances_ for tree in _forest], axis=0)
         self._importance = self._importance.sort_values(by=['Importance'],
           ascending=False)
-
-        log.debug('Computing importance significance')
 
       return self._importance
 
@@ -257,7 +255,7 @@ class CMSForests16:
     self.X_test = None
     self.y_test = None
 
-    log.basicConfig(filename=logfile, level=log.DEBUG,
+    log.basicConfig(filename=logfile, level=log.INFO,
       format='%(asctime)s : %(levelname)8s : %(message)s (%(module)s.%(funcName)s)',
       datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -293,7 +291,7 @@ class CMSForests16:
       y_test_path=None):
     ''' Data should be provided in log2 '''
 
-    log.debug(f'Loading data, X = {X_path}, y = {y_path}')
+    log.info(f'Loading data, X = {X_path}, y = {y_path}')
 
     self.X = pd.read_table(X_path, sep='\t', index_col=0)
     self.y = pd.read_table(y_path, sep='\t', index_col=0)
@@ -318,7 +316,7 @@ class CMSForests16:
 
   def _grid_fit(self):
 
-    log.debug('Feature selection')
+    log.info('Feature selection')
     fs = FeatureSelection(X=self.X, y=self.y)
     n = min(self.max_feat, self.X.shape[1])
     fs.fit(selector='mRMR', n=n, is_discrete=self.is_discrete,
@@ -329,9 +327,9 @@ class CMSForests16:
 
     for n in self.nfeats:
       if not all_feat:
-        log.debug(f'Fitting model with n features = {n}')
+        log.info(f'Fitting model with n features = {n}')
 
-        log.debug('Starting Grid Search')
+        log.info('Starting Grid Search')
         gcv = _Model(sX.iloc[:, :n], self.y)
         gcv.fit()
 
@@ -379,16 +377,16 @@ class CMSForests16:
         return False
 
     if self.model is None:
-      log.debug('Inserting first model')
-      log.debug(f'Score median is {gcv.best_score_med}')
-      log.debug(f'Score MAD is {gcv.best_score_mad}')
+      log.info('Inserting first model')
+      log.info(f'Score median is {gcv.best_score_med}')
+      log.info(f'Score MAD is {gcv.best_score_mad}')
       self.model = gcv
       self.n = n
     elif _better_score(gcv.best_score_med, self.model.best_score_med,
         gcv.best_score_mad, self.model.best_score_mad, n, self.n):
-      log.debug('Updating with better model')
-      log.debug(f'Score median is {gcv.best_score_med}')
-      log.debug(f'Score MAD is {gcv.best_score_mad}')
+      log.info('Updating with better model')
+      log.info(f'Score median is {gcv.best_score_med}')
+      log.info(f'Score MAD is {gcv.best_score_mad}')
       self.model = gcv
       self.n = n
 
@@ -404,7 +402,7 @@ class CMSForests16:
         cols = [c for c in cols if e not in c]
       self.X = self.X[cols]
 
-    log.debug(
+    log.info(
       f'Keeping {self.X.shape[0]} samples and {self.X.shape[1]} features')
 
   def _build(self, build_subset=tuple(), build_method='ratio'):
@@ -412,9 +410,9 @@ class CMSForests16:
     if build_subset:
       build_subset = set(build_subset) & set(self.X.columns)
       self.X = self.X[list(build_subset)]
-      log.debug(f'Building from {self.X.shape[1]} features')
+      log.info(f'Building from {self.X.shape[1]} features')
 
-    log.debug(f'Building max {self.fcons_top} final features')
+    log.info(f'Building max {self.fcons_top} final features')
     fc = FeatureConstruction(X=self.X, top=self.fcons_top, y=self.y)
     fc.fit(constructor='ratio')
     self.X = fc.X
