@@ -24,6 +24,7 @@ requirements = [
   'scikit-learn>=0.18.1',
   'joblib>=0.11',
   'imbalanced-learn>=0.2.1',
+  'Keras>=2.02',
 ]
 
 dependency_links = [
