@@ -3,6 +3,7 @@
 import IPython
 import json
 import logging as log
+import matplotlib.pyplot as plt
 import numpy as np
 import plotly
 import plotly.graph_objs as go

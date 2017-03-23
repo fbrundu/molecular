@@ -330,10 +330,10 @@ class CMSForests16:
         log.info(f'Fitting model with n features = {n}')
 
         log.info('Starting Grid Search')
-        gcv = _Model(sX.iloc[:, :n], self.y)
-        gcv.fit()
+        model = self._Model(sX.iloc[:, :n], self.y)
+        model.fit()
 
-        self._update_model(gcv, n)
+        self._update_model(model, n)
 
         if self.X.shape[1] <= n:
           all_feat = True
@@ -367,7 +367,7 @@ class CMSForests16:
 
     return np.unique(ns)
 
-  def _update_model(self, gcv, n):
+  def _update_model(self, model, n):
 
     def _better_score(nmed, omed, nmad, omad, nn, on):
       if ((nmed > omed) or (nmed == omed and nmad < omad) or
@@ -378,16 +378,16 @@ class CMSForests16:
 
     if self.model is None:
       log.info('Inserting first model')
-      log.info(f'Score median is {gcv.best_score_med}')
-      log.info(f'Score MAD is {gcv.best_score_mad}')
-      self.model = gcv
+      log.info(f'Score median is {model.best_score_med}')
+      log.info(f'Score MAD is {model.best_score_mad}')
+      self.model = model
       self.n = n
-    elif _better_score(gcv.best_score_med, self.model.best_score_med,
-        gcv.best_score_mad, self.model.best_score_mad, n, self.n):
+    elif _better_score(model.best_score_med, self.model.best_score_med,
+        model.best_score_mad, self.model.best_score_mad, n, self.n):
       log.info('Updating with better model')
-      log.info(f'Score median is {gcv.best_score_med}')
-      log.info(f'Score MAD is {gcv.best_score_mad}')
-      self.model = gcv
+      log.info(f'Score median is {model.best_score_med}')
+      log.info(f'Score MAD is {model.best_score_mad}')
+      self.model = model
       self.n = n
 
   def _clean(self, clean=tuple(), keep=tuple(), exclude=tuple()):
