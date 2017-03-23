@@ -25,7 +25,7 @@ class _Model:
 
   def __init__(self, X, y):
     ''' Initialisation '''
-    self.ntests = 1
+    self.ntests = 3
     self.X = X
     self.y = y
 
