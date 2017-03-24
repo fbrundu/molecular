@@ -190,15 +190,24 @@ class CMSForests16:
       y_test_path=y_test_path)
 
     if build:
-      self._clean(clean=('perc_', 'l2r_', 'diff_'))
+      _clean(self.X, clean=('perc_', 'l2r_', 'diff_'))
       self._build(build_subset=build_subset, build_method=build_method)
 
     if include:
       keep = include
       clean = ('')
 
-    self._clean(exclude=exclude, keep=keep, clean=clean)
+    self.X = _clean(self.X, exclude=exclude, keep=keep, clean=clean)
     self._grid_fit()
+    self._prepare_test()
+    self.X_test = _clean(self.X_test, exclude=exclude, keep=keep, clean=clean)
+
+  def _prepare_test(self):
+
+    log.info(f'Building {self.max_feat} features for test dataset')
+    fc = FeatureConstruction(X=self.X_test, top=self.fcons_top, y=self.y_test)
+    fc.fit(constructor='ratio_spec', ratios=list(self.X.columns))
+    self.X_test = fc.X
 
   def _load(self, X_path, y_path, subsample=[], X_test_path=None,
       y_test_path=None):
@@ -256,20 +265,22 @@ class CMSForests16:
         y_test=self.y_test)
       fig.savefig(os.path.join(path, 'test_cm.pdf'), bbox_inches='tight')
 
-  def _clean(self, clean=tuple(), keep=tuple(), exclude=tuple()):
+  @staticmethod
+  def _clean(X, clean=tuple(), keep=tuple(), exclude=tuple()):
 
-    cols = [c for c in self.X.columns
+    cols = [c for c in X.columns
       if c.startswith(keep) or not c.startswith(clean)]
-    self.X = self.X[cols]
+    X = X[cols]
 
     if exclude is not None:
-      cols = self.X.columns
+      cols = X.columns
       for e in exclude:
         cols = [c for c in cols if e not in c]
-      self.X = self.X[cols]
+      X = X[cols]
 
-    log.info(
-      f'Keeping {self.X.shape[0]} samples and {self.X.shape[1]} features')
+    log.info(f'Keeping {X.shape[0]} samples and {X.shape[1]} features')
+
+    return X
 
   def _build(self, build_subset=tuple(), build_method='ratio'):
 

@@ -103,11 +103,22 @@ class FeatureConstruction:
 
     return X
 
+  def _ratio_spec(self, ratios):
+    ''' Build specific ratios '''
+
+    for r in ratios:
+      feats = r.partition('_')[2]
+      feats = feats.split('_')
+      self.X[f'l2r_{feats[0]}_{feats[1]}'] = (
+        self.X[feats[0]] - self.X[feats[1]])
+
   def fit(self, constructor, **kwargs):
     ''' Build features '''
 
     if constructor == 'ratio':
       self._ratio(**kwargs)
+    elif constructor == 'ratio_spec':
+      self._ratio_spec(**kwargs)
     else:
       raise ValueError(f'Constructor {constructor} not implemented')
 
