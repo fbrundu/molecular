@@ -102,6 +102,8 @@ class _Model:
 
   def draw(self, what=[], **kwargs):
 
+    fig = None
+
     if 'test' in what:
       fig = self._draw_test(**kwargs)
 

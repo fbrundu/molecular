@@ -4,6 +4,7 @@ from imblearn.combine import SMOTETomek
 import joblib
 import logging as log
 import numpy as np
+import os
 import pandas as pd
 import scipy.stats as ss
 from sklearn.ensemble import RandomForestClassifier
@@ -99,6 +100,7 @@ class _Model:
 
   def draw(self, what=[], **kwargs):
 
+    fig = None
     if 'importance' in what:
       fig = self._draw_importance(**kwargs)
     elif 'distribution' in what:
@@ -233,7 +235,7 @@ class CMSForests16:
       nscale=self.nscale)
     sX = fs.X
 
-    log.info(f'Fitting model with n features = {n}')
+    log.info(f'Fitting model with n features = {self.max_feat}')
 
     log.info('Starting Grid Search')
     self.model = _Model(sX, self.y)
@@ -248,12 +250,6 @@ class CMSForests16:
       fig = self.model.draw(what=['distribution'], feat=feat,
         xlabel=self.y.columns[0])
       fig.savefig(os.path.join(path, feat + '.pdf'), bbox_inches='tight')
-
-    fig = self.model.draw(what=['confusion'])
-    fig.savefig(os.path.join(path, 'cm.pdf'), bbox_inches='tight')
-
-    fig = self.model.draw(what=['roc'])
-    fig.savefig(os.path.join(path, 'roc.pdf'), bbox_inches='tight')
 
     if self.X_test is not None and self.y_test is not None:
       fig = self.model.draw(what=['test'], X_test=self.X_test,

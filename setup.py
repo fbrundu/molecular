@@ -25,7 +25,7 @@ requirements = [
   'joblib>=0.11',
   'imbalanced-learn>=0.2.1',
   'Keras>=2.0.2',
-  'tensorflow>=1.0.1',
+  'tensorflow>=1.0.0',
 ]
 
 dependency_links = [
