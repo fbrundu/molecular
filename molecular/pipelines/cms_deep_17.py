@@ -11,14 +11,11 @@ import numpy as np
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import (cross_val_predict, cross_val_score,
-  GridSearchCV)
+from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 from molecular.plotting import Plot
-from molecular.util import mad, mc_roc_auc
 
 
 class _Model:

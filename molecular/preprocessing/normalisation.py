@@ -3,7 +3,6 @@
 import dask.dataframe as dd
 import logging as log
 import multiprocessing as mp
-import pandas as pd
 import scipy.stats as ss
 
 
@@ -34,7 +33,7 @@ class Normalisation:
       self.X_means = sX.mean().tolist()
 
     rX = dd.from_pandas(self.X, npartitions=mp.cpu_count()+1)
-    rX = rX.apply(_rank_prefix, axis=1, meta=X)
+    rX = rX.apply(_rank_prefix, axis=1, meta=self.X)
     self.X = rX.compute()
 
     for i in range(len(X_means)):

@@ -10,7 +10,7 @@ class Mapping:
   def __init__(self, host='www.ensembl.org'):
     self.s = biomart.BioMart(host=host)
 
-  def ensembl_to_hgnc(ensembl_ids):
+  def ensembl_to_hgnc(self, ensembl_ids):
 
     # building query
     self.s.new_query()

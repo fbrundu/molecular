@@ -2,13 +2,14 @@
 
 import IPython
 import json
-import logging as log
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import plotly
 import plotly.graph_objs as go
 import scipy.stats as ss
 import seaborn as sns
+from sklearn.metrics import auc, roc_curve
 import statsmodels.graphics.gofplots as smg
 
 

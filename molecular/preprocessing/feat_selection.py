@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import logging as log
-import pandas as pd
 import pymrmr
 
 from .core import discretise

@@ -6,16 +6,12 @@ import logging as log
 import numpy as np
 import os
 import pandas as pd
-import scipy.stats as ss
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import (cross_val_predict, cross_val_score,
-  GridSearchCV)
-import statsmodels.sandbox.stats.multicomp as smc
+from sklearn.model_selection import GridSearchCV
 
 from molecular.plotting import Plot
 from molecular.preprocessing import FeatureConstruction, FeatureSelection
-from molecular.util import mad, mc_roc_auc
 
 
 class _Model:
