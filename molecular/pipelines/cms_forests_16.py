@@ -190,17 +190,19 @@ class CMSForests16:
       y_test_path=y_test_path)
 
     if build:
-      _clean(self.X, clean=('perc_', 'l2r_', 'diff_'))
+      CMSForests16._clean(self.X, clean=('perc_', 'l2r_', 'diff_'))
       self._build(build_subset=build_subset, build_method=build_method)
 
     if include:
       keep = include
       clean = ('')
 
-    self.X = _clean(self.X, exclude=exclude, keep=keep, clean=clean)
+    self.X = CMSForests16._clean(self.X, exclude=exclude, keep=keep,
+      clean=clean)
     self._grid_fit()
     self._prepare_test()
-    self.X_test = _clean(self.X_test, exclude=exclude, keep=keep, clean=clean)
+    self.X_test = CMSForests16._clean(self.X_test, exclude=exclude,
+      keep=keep, clean=clean)
 
   def _prepare_test(self):
 
