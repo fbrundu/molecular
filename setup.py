@@ -28,10 +28,6 @@ requirements = [
   'tensorflow>=1.0.0',
 ]
 
-dependency_links = [
-  'git+https://github.com/fbrundu/pymrmr.git',
-]
-
 test_requirements = [
   # TODO: put package test requirements here
 ]
