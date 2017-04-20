@@ -31,7 +31,7 @@ class _Model:
     self.best_clf = None
     self._importance = None
     self._ntop = 40
-    self.cv_cm_norm = None
+    self.test_cm_norm = None
     self.clf_params = { 'random_state': 42, 'criterion': 'gini',
       'max_features': None }
 
