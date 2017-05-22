@@ -63,8 +63,8 @@ class _Model:
   def _test(self, X_test, y_test):
 
     truth = y_test.values.ravel()
-    pred = self.best_clf.best_estimator_.predict()
-    proba = self.best_clf.best_estimator_.predict_proba()
+    pred = self.best_clf.best_estimator_.predict(X_test)
+    proba = self.best_clf.best_estimator_.predict_proba(X_test)
 
     names = sorted(list(np.unique(truth)))
     self.test_cm = pd.DataFrame(confusion_matrix(truth, pred, labels=names),
