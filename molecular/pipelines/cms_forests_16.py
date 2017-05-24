@@ -7,8 +7,9 @@ import numpy as np
 import os
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix, make_scorer
+from sklearn.metrics import confusion_matrix, make_scorer, roc_auc_score
 from sklearn.model_selection import GridSearchCV
+from sklearn.preprocessing import LabelBinarizer
 
 from molecular.plotting import Plot
 from molecular.preprocessing import FeatureConstruction, FeatureSelection
