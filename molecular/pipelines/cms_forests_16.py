@@ -7,7 +7,7 @@ import numpy as np
 import os
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, make_scorer
 from sklearn.model_selection import GridSearchCV
 
 from molecular.plotting import Plot
