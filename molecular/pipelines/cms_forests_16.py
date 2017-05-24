@@ -13,6 +13,27 @@ from sklearn.model_selection import GridSearchCV
 from molecular.plotting import Plot
 from molecular.preprocessing import FeatureConstruction, FeatureSelection
 
+# FIXME deprecated
+# fix when https://github.com/scikit-learn/scikit-learn/pull/7663 is ready
+class Score:
+
+  @staticmethod
+  def _mclass_roc_auc(truth, pred, average="macro"):
+
+    lb = LabelBinarizer()
+    lb.fit(truth)
+
+    truth = lb.transform(truth)
+    pred = lb.transform(pred)
+
+    return roc_auc_score(truth, pred, average=average)
+
+  def get(scorer, average="macro"):
+
+    if scorer == "roc_auc":
+      return make_scorer(Score._mclass_roc_auc)
+####
+
 
 class _Model:
 
@@ -50,8 +71,8 @@ class _Model:
   def _fit(self):
 
     rfc = RandomForestClassifier(**self.clf_params)
-    clf = GridSearchCV(rfc, param_grid=self._param_grid, scoring='f1_macro',
-      verbose=2, n_jobs=-1)
+    clf = GridSearchCV(rfc, param_grid=self._param_grid,
+      scoring=Score.get("roc_auc", average="macro"), verbose=2, n_jobs=-1)
     clf.fit(self.fX.values, self.fy.values.ravel())
     self.best_clf = clf
     log.info(f'Best score: {clf.best_score_}')
