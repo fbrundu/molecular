@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from imblearn.combine import SMOTETomek
+from imblearn.under_sampling import RandomUnderSampler
 import joblib
 import logging as log
 import numpy as np
@@ -60,7 +61,15 @@ class _Model:
   def _fix_imbalance(self):
     ''' Fix imbalance of size between classes '''
 
-    st = SMOTETomek()
+    # FIXME find best ratio
+    card = self.y.iloc[:,0].value_counts()
+    ratio = card.max() / card.min()
+    
+    if ratio < 1.5:
+      st = SMOTETomek()
+    else: 
+      st = RandomUnderSampler()
+    ###
 
     fX, fy = st.fit_sample(self.X.values, self.y.values.ravel())
     samples = [f'smp{i}' for i in range(fX.shape[0])]
@@ -226,7 +235,7 @@ class CMSForests16:
 
     log.info(f'Building {self.max_feat} features for test dataset')
     fc = FeatureConstruction(X=self.X_test, top=self.fcons_top, y=self.y_test)
-    fc.fit(constructor='ratio_spec', ratios=list(self.X.columns))
+    fc.fit(constructor='ratio_spec', ratios=list(self.model.fX.columns))
     self.X_test = fc.X
 
   def _load(self, X_path, y_path, subsample=[], X_test_path=None,
@@ -292,6 +301,7 @@ class CMSForests16:
       if c.startswith(keep) or not c.startswith(clean)]
     X = X[cols]
 
+    import ipdb; ipdb.set_trace()
     if exclude is not None:
       cols = X.columns
       for e in exclude:
