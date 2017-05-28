@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from imblearn.combine import SMOTETomek
-from imblearn.under_sampling import RandomUnderSampler
+from imblearn.under_sampling import CondensedNearestNeighbour
 import joblib
 import logging as log
 import numpy as np
@@ -66,9 +66,9 @@ class _Model:
     ratio = card.max() / card.min()
     
     if ratio < 1.5:
-      st = SMOTETomek()
+      st = SMOTETomek(random_state=42)
     else: 
-      st = RandomUnderSampler()
+      st = CondensedNearestNeighbour(random_state=42)
     ###
 
     fX, fy = st.fit_sample(self.X.values, self.y.values.ravel())
