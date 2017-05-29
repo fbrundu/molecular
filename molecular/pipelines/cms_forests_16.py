@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from imblearn.combine import SMOTETomek
+from imblearn.under_sampling import NearMiss
 import joblib
 import logging as log
 import numpy as np
@@ -60,9 +61,22 @@ class _Model:
   def _fix_imbalance(self):
     ''' Fix imbalance of size between classes '''
 
-    st = SMOTETomek(ratio=0.7, random_state=42)
+    # FIXME find best ratio
+    card = self.y.iloc[:,0].value_counts()
+    ratio = card.max() / card.min()
+    
+    if ratio > 1.5:
+      st = NearMiss(ratio=0.75, random_state=42)
+      fX, fy = st.fit_sample(self.X.values, self.y.values.ravel())
+      samples = [f'smp{i}' for i in range(fX.shape[0])]
+      self.fX = pd.DataFrame(fX, index=samples, columns=self.X.columns)
+      self.fy = pd.DataFrame(fy, index=samples, columns=self.y.columns)
+    else:
+      self.fX = self.X
+      self.fy = self.y
 
-    fX, fy = st.fit_sample(self.X.values, self.y.values.ravel())
+    st = SMOTETomek(random_state=42)
+    fX, fy = st.fit_sample(self.fX.values, self.fy.values.ravel())
     samples = [f'smp{i}' for i in range(fX.shape[0])]
     self.fX = pd.DataFrame(fX, index=samples, columns=self.X.columns)
     self.fy = pd.DataFrame(fy, index=samples, columns=self.y.columns)
@@ -156,6 +170,8 @@ class _Model:
 
     if self.test_cm_norm is None:
       self._test(X_test, y_test)
+
+    self.test_cm.to_csv('test_cm.txt', sep='\t', header=None)
 
     fig = Plot.heatmap(self.test_cm_norm, title='Normalised Confusion Matrix',
       xlabel='Predicted Label', ylabel='True Label')
