@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from imblearn.combine import SMOTETomek
-from imblearn.under_sampling import ClusterCentroids
 import joblib
 import logging as log
 import numpy as np
@@ -61,15 +60,7 @@ class _Model:
   def _fix_imbalance(self):
     ''' Fix imbalance of size between classes '''
 
-    # FIXME find best ratio
-    card = self.y.iloc[:,0].value_counts()
-    ratio = card.max() / card.min()
-    
-    if ratio < 1.5:
-      st = SMOTETomek(random_state=42)
-    else: 
-      st = ClusterCentroids(random_state=42)
-    ###
+    st = SMOTETomek(ratio=0.7, random_state=42)
 
     fX, fy = st.fit_sample(self.X.values, self.y.values.ravel())
     samples = [f'smp{i}' for i in range(fX.shape[0])]
