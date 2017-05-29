@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from imblearn.combine import SMOTETomek
-from imblearn.under_sampling import CondensedNearestNeighbour
+from imblearn.under_sampling import ClusterCentroids
 import joblib
 import logging as log
 import numpy as np
@@ -68,7 +68,7 @@ class _Model:
     if ratio < 1.5:
       st = SMOTETomek(random_state=42)
     else: 
-      st = CondensedNearestNeighbour(random_state=42)
+      st = ClusterCentroids(random_state=42)
     ###
 
     fX, fy = st.fit_sample(self.X.values, self.y.values.ravel())
