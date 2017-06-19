@@ -254,9 +254,15 @@ class CMSForests16:
     self.X = pd.read_table(X_path, sep='\t', index_col=0)
     self.y = pd.read_table(y_path, sep='\t', index_col=0)
 
+    if not CMSForests16._is_log2(self.X):
+      raise ValueError('Training data is not in log2')
+
     if X_test_path is not None and y_test_path is not None:
       self.X_test = pd.read_table(X_test_path, sep='\t', index_col=0)
       self.y_test = pd.read_table(y_test_path, sep='\t', index_col=0)
+    
+      if not CMSForests16._is_log2(self.X_test):
+        raise ValueError('Testing data is not in log2')
 
       samples_test = self.X_test.index & self.y_test.index
       self.X_test = self.X_test.ix[samples_test]
@@ -271,6 +277,15 @@ class CMSForests16:
       subsample = list(subsample)
       self.X = self.X.ix[subsample]
       self.y = self.y.ix[subsample]
+
+  @staticmethod
+  def _is_log2(X):
+
+    # NOTE We assume that log2 values cannot be greater than 50
+    if X.max().max() > 50:
+      return False
+    else:
+      return True
 
   def _grid_fit(self):
 
