@@ -3,10 +3,4 @@
 __author__ = """Francesco G. Brundu"""
 __email__ = 'francesco.brundu@gmail.com'
 
-__all__ = [
-  'pipelines',
-  'plotting',
-  'preprocessing',
-  'singlecell',
-  'util',
-]
+from .singlecell import SingleCell

@@ -42,10 +42,10 @@ setup(
   url='https://github.com/fbrundu/molecular',
   packages=[
     'molecular',
-#    'molecular.histology',
     'molecular.pipelines',
     'molecular.plotting',
     'molecular.preprocessing',
+    'molecular.singlecell',
     'molecular.util',
   ],
 #  package_dir={'molecular':

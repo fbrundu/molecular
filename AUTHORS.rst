@@ -6,7 +6,6 @@ Development Lead
 ----------------
 
 * Francesco G. Brundu <francesco.brundu@gmail.com>
-* Francesco Ponzio <>
 
 Contributors
 ------------
